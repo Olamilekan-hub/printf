@@ -41,7 +41,7 @@ int _printf(const char *format, ...)
 			precision = bring_precision(format, &n, list);
 			size = bring_size(format, &n);
 			++n;
-			ans = admin(format, &n, list, buffer, flag, width, precision, size);
+			ans = admin(format, &n, list, storage, flag, width, precision, size);
 			if (ans == -1)
 			{
 				return (-1);
