@@ -60,6 +60,8 @@ typedef struct flag_s
 	unsigned char val;
 } flag_t;
 
+void clear(va_list args, buffer_p *ans);
+int tryit(const char *format, va_list args, buffer_p *ans);
 int _printf(const char *format, ...);
 
 /* conversion functions */
