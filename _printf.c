@@ -1,24 +1,19 @@
 #include "main.h"
-
 void clear(va_list args, buffer_p *ans);
 int tryit(const char *format, va_list args, buffer_p *ans);
 int _printf(const char *format, ...);
-
 /**
  * clear - clears workspace
  * @args: arguments
  * @ans: a struct
  */
-
 void clear(va_list args, buffer_p *ans)
-{
-	va_end(args);
+{	va_end(args);
 	write(1, ans->begin, ans->length);
 	free_b(ans);
 }
-
 /**
- * tryit - scans format
+ * tryit - scans format string and prints arguments
  * @format: to be printed
  * @ans: a struct
  * @args: arguments
@@ -28,16 +23,15 @@ void clear(va_list args, buffer_p *ans)
 int tryit(const char *format, va_list args, buffer_p *ans)
 {
 	int n, w, p, answer = 0;
-	char hold;
-	unsigned char flags, length;
-	unsigned int (*v)(va_list, buffer_p *, unsigned char, int, int, unsigned char);
+	char hold = 0;
+	unsigned char flags, length = 0;
+	unsigned int (*v)(va_list,
+			buffer_p *, unsigned char, int, int, unsigned char);
 
 	for (n = 0; *(format + n); n++)
 	{
-		length = 0;
 		if (*(format + n) == '%')
 		{
-			hold = 0;
 			flags = handle_f(format + n + 1, &hold);
 			w = handle_w(args, format + n + hold + 1, &hold);
 			p = handle_p(args, format + n + hold + 1, &hold);
@@ -61,11 +55,9 @@ int tryit(const char *format, va_list args, buffer_p *ans)
 	clear(args, ans);
 	return (answer);
 }
-
 /**
  * _printf - prints in specified format
  * @format: the information to be printed
- *
  * Return: the data stored
  */
 int _printf(const char *format, ...)
@@ -84,9 +76,7 @@ int _printf(const char *format, ...)
 		return (-1);
 	}
 	va_start(args, format);
-
 	answer = tryit(format, args, ans);
-
 	va_end(args);
 	return (answer);
 }
