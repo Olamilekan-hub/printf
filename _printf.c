@@ -4,6 +4,7 @@ void print_storage(char storage[], int *store_pos);
 /**
  * _printf - print stored data
  * @format: the required format
+ *
  * Return: the data in the required format
  */
 
