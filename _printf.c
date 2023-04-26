@@ -9,6 +9,7 @@ int _printf(const char *format, ...);
  * @args: arguments
  * @ans: a struct
  */
+
 void clear(va_list args, buffer_p *ans)
 {
 	va_end(args);
@@ -86,5 +87,6 @@ int _printf(const char *format, ...)
 
 	answer = tryit(format, args, ans);
 
+	va_end(args);
 	return (answer);
 }
