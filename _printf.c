@@ -1,71 +1,90 @@
 #include "main.h"
-void print_storage(char storage[], int *store_pos);
+
+void clear(va_list args, buffer_p *ans);
+int tryit(const char *format, va_list args, buffer_p *ans);
+int _printf(const char *format, ...);
 
 /**
- * _printf - print stored data
- * @format: the required format
- *
- * Return: the data in the required format
+ * clear - clears workspace
+ * @args: arguments
+ * @ans: a struct
  */
+void clear(va_list args, buffer_p *ans)
+{
+	va_end(args);
+	write(1, ans->begin, ans->length);
+	free_b(ans);
+}
 
+/**
+ * tryit - scans format
+ * @format: to be printed
+ * @ans: a struct
+ * @args: arguments
+ *
+ * Return: data stored
+ */
+int tryit(const char *format, va_list args, buffer_p *ans)
+{
+	int n, w, p, answer = 0;
+	char hold;
+	unsigned char flags, length;
+	unsigned int (*v)(va_list, buffer_p *, unsigned char, int, int, unsigned char);
+
+	for (n = 0; *(format + n); n++)
+	{
+		length = 0;
+		if (*(format + n) == '%')
+		{
+			hold = 0;
+			flags = handle_f(format + n + 1, &hold);
+			w = handle_w(args, format + n + hold + 1, &hold);
+			p = handle_p(args, format + n + hold + 1, &hold);
+			length = handle_l(format + n + hold + 1, &hold);
+			v = handle_s(format + n + hold + 1);
+			if (v != NULL)
+			{
+				n += hold + 1;
+				answer += v(args, ans, flags, w, p, length);
+				continue;
+			}
+			else if (*(format + n + hold + 1) == '\0')
+			{
+				answer = -1;
+				break;
+			}
+		}
+		answer += _cpy(ans, (format + n), 1);
+		n += (length != 0) ? 1 : 0;
+	}
+	clear(args, ans);
+	return (answer);
+}
+
+/**
+ * _printf - prints in specified format
+ * @format: the information to be printed
+ *
+ * Return: the data stored
+ */
 int _printf(const char *format, ...)
 {
-	int n, ans = 0, ans_given = 0;
-	int flag, width, precision, size, store_pos;
-
-	va_list list;
-	char storage[BUFFER_SIZE];
+	buffer_p *ans;
+	va_list args;
+	int answer;
 
 	if (format == NULL)
 	{
 		return (-1);
 	}
-
-	va_start(list, format);
-
-	for (n = 0; format && format[n] != '\0'; n++)
+	ans = init_b();
+	if (ans == NULL)
 	{
-		if (format[n] != '%')
-		{
-			storage[store_pos++] = format[n];
-			if (store_pos == BUFFER_SIZE)
-			{
-				print_storage(storage, &store_pos);
-			}
-			ans_given++;
-		}
-		else
-		{
-			print_storage(storage, &store_pos);
-			flag = bring_flag(format, &n);
-			width = bring_width(format, &n, list);
-			precision = bring_precision(format, &n, list);
-			size = bring_size(format, &n);
-			++n;
-			ans = admin(format, &n, list, storage, flag, width, precision, size);
-			if (ans == -1)
-			{
-				return (-1);
-			}
-			ans_given += ans;
-		}
+		return (-1);
 	}
-	print_storage(storage, &store_pos);
-	va_end(list);
-	return (ans_given);
-}
+	va_start(args, format);
 
-/**
- * print_storage - prints data stored in buffer
- * @storage: data stored in memory location
- * @store_pos: the present position on the array
- */
+	answer = tryit(format, args, ans);
 
-void print_storage(char storage[], int *store_pos)
-{
-	if (*store_pos > 0)
-	{
-		write(1, &storage[0], *store_pos);
-		*store_pos = 0;
-	}
+	return (answer);
 }

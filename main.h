@@ -1,95 +1,99 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <stdio.h>
-#include <stddef.h>
-#include <stdlib.h>
+
 #include <stdarg.h>
+#include <stdlib.h>
 #include <unistd.h>
+#include <limits.h>
 
-#define UNUSED(x) (void)(x)
-#define BUFFER_SIZE 1024
 
-/* FLAG */
-#define MINUS 1
-#define PLUS 2
-#define ZERO 4
-#define HASH 8
-#define SPACE 16
+/* flag */
+#define PLUS 1
+#define SPACE 2
+#define HASH 4
+#define ZERO 8
+#define NEGA 16
+#define FLAG_P (flags & 1)
+#define FLAG_S ((flags >> 1) & 1)
+#define FLAG_H ((flags >> 2) & 1)
+#define FLAG_Z ((flags >> 3) & 1)
+#define FLAG_N ((flags >> 4) & 1)
 
-/* SIZE */
-#define LONG 2
+/* length */
 #define SHORT 1
+#define LONG 2
+
 
 /**
- * struct fmat - structure
- * @fmat: required format
- * @fun: similar function
+ * struct buffer_m - define new struct
+ * @buffer: a pointer to the address of an array
+ * @begin: pointer to start of buffer
+ * @length: span of stored data
  */
-struct fmat
+typedef struct buffer_m
 {
-	char fmat;
-	int (*fun)(va_list, char[], int, int, int, int);
-};
+	char *buffer;
+	char *begin;
+	unsigned int length;
+} buffer_p;
 
 /**
- * typedef struct fmat fma_t - structure
- * @fmat: required format
- * @fma_t: similar structure
+ * struct convert_s - define new struct
+ * @required: the specified format
+ * @fun: pointer to specified format function
  */
-typedef struct fmat fma_t;
+typedef struct convert_s
+{
+	unsigned char required;
+	unsigned int(*fun)(va_list, buffer_p *, unsigned char, int, int, unsigned char);
+} convert_t;
+
+/**
+ * struct flag_s - define new struct
+ * @flag: a notice that shows up
+ * @val: weight of flag
+ */
+typedef struct flag_s
+{
+	unsigned char flag;
+	unsigned char val;
+} flag_t;
 
 int _printf(const char *format, ...);
-int admin(const char *fmat, int *n,
-va_list list, char storage[], int flag, int width, int precision, int
-size);
 
-/* FUNCTIONS */
-int character(va_list types, char storage[],
-int flag, int width, int precision, int size);
-int string(va_list types, char storage[],
-int flag, int width, int precision, int size);
-int percentage(va_list types, char storage[],
-int flag, int width, int precision, int size);
-int integer(va_list types, char storage[],
-int flag, int width, int precision, int size);
-int binary(va_list types, char storage[],
-int flag, int width, int precision, int size);
-int unsignd(va_list types, char storage[],
-int flag, int width, int precision, int size);
-int octal(va_list types, char storage[],
-int flag, int width, int precision, int size);
-int hexadecimal(va_list types, char storage[],
-int flag, int width, int precision, int size);
-int hexaupper(va_list types, char storage[],
-int flag, int width, int precision, int size);
-int hexa(va_list types, char map_to[],
-char storage[], int flag, char flag_ch, int width, int precision, int
-size);
-int nonprintable(va_list types, char storage[],
-int flag, int width, int precision, int size);
-int pointer(va_list types, char storage[],
-int flag, int width, int precision, int size);
-int bring_flag(const char *format, int *n);
-int bring_width(const char *format, int *n, va_list list);
-int bring_precision(const char *format, int *n, va_list list);
-int bring_size(const char *format, int *n);
-int reverse(va_list types, char storage[],
-int flag, int width, int precision, int size);
-int rot13(va_list types, char storage[],
-int flag, int width, int precision, int size);
-int writechar(char c, char storage[],
-int flag, int width, int precision, int size);
-int writenum(int is_positive, int ind, char storage[],
-int flag, int width, int precision, int size);
-int writenumber(int ind, char bff[], int flag, int width, int precision,
-int length, char padd, char extra_c);
-int writepointer(char storage[], int ind, int length,
-int width, int flag, char padd, char extra_c, int padd_start);
-int writeunsigned(int is_negative, int ind, char storage[], int flag, int width, int precision, int size);
-int isprintable(char);
-int hexacode(char, char[], int);
-int itdigit(char);
-long int convertsizenumber(long int num, int size);
-long int convertsizeunsigned(unsigned long int num, int size);
+/* conversion functions */
+unsigned int con_c(va_list args, buffer_p *ans, unsigned char flags, int w, int p, unsigned char length);
+unsigned int con_s(va_list args, buffer_p *ans, unsigned char flags, int w, int p, unsigned char length);
+unsigned int con_d(va_list args, buffer_p *ans, unsigned char flags, int w, int p, unsigned char length);
+unsigned int con_per(va_list args, buffer_p *ans, unsigned char flags, int w, int p, unsigned char length);
+unsigned int con_b(va_list args, buffer_p *ans, unsigned char flags, int w, int p, unsigned char length);
+unsigned int con_u(va_list args, buffer_p *ans, unsigned char flags, int w, int p, unsigned char length);
+unsigned int con_o(va_list args, buffer_p *ans, unsigned char flags, int w, int p, unsigned char length);
+unsigned int con_x(va_list args, buffer_p *ans, unsigned char flags, int w, int p, unsigned char length);
+unsigned int con_X(va_list args, buffer_p *ans, unsigned char flags, int w, int p, unsigned char length);
+unsigned int con_S(va_list args, buffer_p *ans, unsigned char flags, int w, int p, unsigned char length);
+unsigned int con_p(va_list args, buffer_p *ans, unsigned char flags, int w, int p, unsigned char length);
+unsigned int con_r(va_list args, buffer_p *ans, unsigned char flags, int w, int p, unsigned char length);
+unsigned int con_R(va_list args, buffer_p *ans, unsigned char flags, int w, int p, unsigned char length);
+
+/* Handle */
+unsigned char handle_f(const char *flags, char *position);
+unsigned char handle_l(const char *changer, char *position);
+int handle_w(va_list args, const char *changer, char *position);
+int handle_p(va_list args, const char *changer, char *position);
+unsigned int(*handle_s(const char *required))(va_list, buffer_p *, unsigned char, int, int, unsigned char);
+
+/* changers */
+unsigned int print_w(buffer_p *ans, unsigned int given, unsigned char flags, int w);
+unsigned int print_sw(buffer_p *ans, unsigned char flags, int w, int p, int size);
+unsigned int print_nw(buffer_p *ans, unsigned int given, unsigned char flags, int w);
+
+/* helps */
+buffer_p *init_b(void);
+void free_b(buffer_p *ans);
+unsigned int _cpy(buffer_p *ans, const char *source, unsigned int m);
+unsigned int con_sb(buffer_p *ans, long int num, char *base, unsigned char flags, int w, int p);
+unsigned int con_ub(buffer_p *ans, unsigned long int num, char *base, unsigned char flags, int w, int p);
+
 #endif /* MAIN_H */
