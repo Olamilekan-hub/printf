@@ -1,7 +1,9 @@
 #include "main.h"
 
-unsigned int con_sb(buffer_p *ans, long int num, char *base, unsigned char flags, int w, int p);
-unsigned int con_ub(buffer_p *ans, unsigned long int num, char *base, unsigned char flags, int w, int p);
+unsigned int con_sb(buffer_p * ans, long int num, char *base,
+		unsigned char flags, int w, int p);
+unsigned int con_ub(buffer_p *ans, unsigned long int num,
+		char *base, unsigned char flags, int w, int p);
 
 /**
  * con_sb - convert to a number in a given base
@@ -14,7 +16,8 @@ unsigned int con_ub(buffer_p *ans, unsigned long int num, char *base, unsigned c
  *
  * Return: date stored in buffer
  */
-unsigned int con_sb(buffer_p *ans, long int num, char *base, unsigned char flags, int w, int p)
+unsigned int con_sb(buffer_p *ans, long int num, char *base,
+		unsigned char flags, int w, int p)
 {
 	int size;
 	char d, y = '0';
@@ -61,7 +64,8 @@ unsigned int con_sb(buffer_p *ans, long int num, char *base, unsigned char flags
  *
  * Return: the data stored in buffer
  */
-unsigned int con_ub(buffer_p *ans, unsigned long int num, char *base, unsigned char flags, int w, int p)
+unsigned int con_ub(buffer_p *ans, unsigned long int num,
+		char *base, unsigned char flags, int w, int p)
 {
 	unsigned int size, answer = 1;
 	char d, y = '0', *l = "0x";

@@ -4,7 +4,8 @@ unsigned char handle_f(const char *flag, char *position);
 unsigned char handle_l(const char *changer, char *position);
 int handle_w(va_list args, const char *changer, char *position);
 int handle_p(va_list args, const char *changer, char *position);
-unsigned int (*handle_s(const char *required))(va_list, buffer_p *, unsigned char, int, int, unsigned char);
+unsigned int (*handle_s(const char *required))(va_list, buffer_p *,
+		unsigned char, int, int, unsigned char);
 
 /**
  * handle_f- flag handling
